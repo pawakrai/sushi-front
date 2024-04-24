@@ -2,14 +2,14 @@ import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { mapMenuImage } from '@/utils/mapMenuImage'
 import { MenuType } from '@/types/menu'
-
+import { DEFAULT_HOST } from '@/config'
 export default function useMenu() {
   const [menu, setMenu] = useState<MenuType[]>([])
   const getMenu = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/api/v1/menu')
-      // console.log('response', response)
-      return response.data
+      const response = await axios.get(`${DEFAULT_HOST}/api/v1/menu`)
+      console.log('response', response)
+      return response.data.data
     } catch (error) {
       console.error(error)
     }

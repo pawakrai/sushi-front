@@ -1,3 +1,4 @@
+import { DEFAULT_HOST } from '@/config'
 import { useTableStore } from '@/store/table.store'
 import { CartItem } from '@/types/menu'
 import axios from 'axios'
@@ -17,14 +18,11 @@ export default function useCreateOrder() {
     }
 
     try {
-      const response = await axios.post(
-        'http://localhost:3000/api/v1/order',
-        order
-      )
-      // console.log('response', response)
-      return response.data
+      const response = await axios.post(`${DEFAULT_HOST}/api/v1/order`, order)
+      console.log('response', response)
+      return response.data.data
     } catch (error) {
-      // console.error(error)
+      console.error(error)
     }
   }
 

@@ -5,7 +5,12 @@ export type Order = {
   orderItem: CartItem[]
 }
 
-type OrderStatus = 'incoming' | 'preparing' | 'completed' | 'canceled'
+type OrderStatus =
+  | 'incoming'
+  | 'preparing'
+  | 'completed'
+  | 'canceled'
+  | 'closed'
 
 export type OrderType = {
   id: string

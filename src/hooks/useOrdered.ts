@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { mapMenuImage } from '@/utils/mapMenuImage'
 import { OrderItem } from '@/types/menu'
 import { useTableStore } from '@/store/table.store'
+import { DEFAULT_HOST } from '@/config'
 
 export default function useOrdered() {
   const [order, setOrder] = useState<OrderItem[]>([])
@@ -12,9 +13,10 @@ export default function useOrdered() {
     const getOrderbyTable = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3000/api/v1/order/${table}`
+          `${DEFAULT_HOST}/api/v1/order/${table}`
         )
-        return response.data
+        console.log('response', response.data)
+        return response.data.data
       } catch (error) {
         console.error(error)
       }
@@ -40,10 +42,21 @@ export default function useOrdered() {
       console.log(localImages)
     }
 
+    // // For mock purpose, we fetch data every 1 second
+    // // fetch data every 1 second
+    // const interval = setInterval(() => {
+    //   fetchData()
+    // }, 1000)
+
+    // return () => clearInterval(interval)
+
     fetchData()
   }, [table, setOrder])
 
-  const subTotal = order.reduce(
+  // filter order without status canceled
+  const filterOrder = order.filter((item) => item.status !== 'canceled')
+
+  const subTotal = filterOrder.reduce(
     (acc, item) => acc + item.price * item.quantity,
     0
   )

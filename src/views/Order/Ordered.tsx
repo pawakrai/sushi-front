@@ -4,6 +4,9 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { useState } from 'react'
 import NoOrderScreen from './NoOrder'
 import useOrdered from '@/hooks/useOrdered'
+import { Badge } from '@/components/ui/badge'
+import { closeAllOrder } from '@/service/order'
+import { useTableStore } from '@/store/table.store'
 
 type OrderedProps = {
   setScreen: (screen: string) => void
@@ -12,9 +15,11 @@ type OrderedProps = {
 const Ordered = ({ setScreen }: OrderedProps) => {
   const { order, subTotal, vatValue, total } = useOrdered()
   const [isCheckout, setIsCheckout] = useState(false)
+  const table = useTableStore((state) => state.table)
 
   const handleThankyouClick = () => {
     setIsCheckout(false)
+    closeAllOrder(table)
     setScreen('Menu')
   }
 
@@ -39,7 +44,16 @@ const Ordered = ({ setScreen }: OrderedProps) => {
                   className="object-contain w-48 h-36"
                 />
                 <div className="flex flex-col gap-4">
-                  <div className="text-2xl">{item.name}</div>
+                  <div className="flex justify-between">
+                    <div className="text-2xl">{item.name}</div>
+                    <Badge variant="secondary">
+                      {item.status === 'completed'
+                        ? 'served'
+                        : item.status === 'incoming'
+                        ? 'waiting'
+                        : item.status}
+                    </Badge>
+                  </div>
                   <div>Quantity :{item.quantity}</div>
                   <div className="flex gap-4 justify-between items-center min-w-[280px]">
                     <div>{item.price} Baht</div>
@@ -91,7 +105,7 @@ const Ordered = ({ setScreen }: OrderedProps) => {
             <img
               src={Thankyou}
               alt="thankyou"
-              className="h-28"
+              className="h-28 cursor-pointer"
               onClick={handleThankyouClick}
             />
           </div>

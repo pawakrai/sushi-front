@@ -11,4 +11,5 @@ export interface CartItem extends MenuType {
 
 export interface OrderItem extends MenuType {
   quantity: number
+  status: string
 }

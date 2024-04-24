@@ -2,16 +2,13 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { SushiKitchenGif } from '@/components/Image'
 import { OrderType } from '@/types/order'
 import { Button } from '@/components/ui/button'
-import useKitchenOrder from '@/hooks/useKitchenOrder'
+import { changeOrderStatus } from '@/service/order'
 type OrderItemsProps = {
   orders: OrderType[]
   type: 'incoming' | 'preparing'
 }
 
 const OrderItems = ({ orders, type }: OrderItemsProps) => {
-  const { handleOnCancelClick, handleOnReadyClick, handleOnConfirmClick } =
-    useKitchenOrder()
-
   return (
     <ScrollArea className="h-[620px] text-slate-800">
       <div className=" flex flex-col gap-6 ">
@@ -27,13 +24,13 @@ const OrderItems = ({ orders, type }: OrderItemsProps) => {
                 {type === 'incoming' && (
                   <>
                     <Button
-                      onClick={() => handleOnConfirmClick(item.id)}
+                      onClick={() => changeOrderStatus(item.id, 'preparing')}
                       className="bg-green-500 rounded-full h-10 w-10 hover:bg-green-800"
                     >
                       ✓
                     </Button>
                     <Button
-                      onClick={() => handleOnCancelClick(item.id)}
+                      onClick={() => changeOrderStatus(item.id, 'canceled')}
                       className="bg-red-500 text-xl rounded-full h-10 w-10 hover:bg-red-800"
                     >
                       x
@@ -42,7 +39,7 @@ const OrderItems = ({ orders, type }: OrderItemsProps) => {
                 )}
                 {type === 'preparing' && (
                   <Button
-                    onClick={() => handleOnReadyClick(item.id)}
+                    onClick={() => changeOrderStatus(item.id, 'completed')}
                     className="bg-orange-400 rounded-full  hover:bg-orange-800"
                   >
                     Ready

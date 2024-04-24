@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { OrderType } from '@/types/order'
+import { DEFAULT_HOST } from '@/config'
 
 export default function useKitchenOrder() {
   const [incommingOrder, setInCommingOrder] = useState<OrderType[]>([])
@@ -11,8 +12,8 @@ export default function useKitchenOrder() {
   useEffect(() => {
     const getOrders = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/api/v1/order')
-        return response.data
+        const response = await axios.get(`${DEFAULT_HOST}/api/v1/order`)
+        return response.data.data
       } catch (error) {
         console.error(error)
         return []
@@ -37,51 +38,20 @@ export default function useKitchenOrder() {
       setReadyOrder(completed)
     }
 
+    // // For mock purpose, we fetch data every 1 second
+    // // fetch data every 1 second
+    // const interval = setInterval(() => {
+    //   fetchData()
+    // }, 500)
+
+    // return () => clearInterval(interval)
+
     fetchData()
   }, [])
-
-  const handleOnConfirmClick = async (id: string) => {
-    try {
-      const response = await axios.put(
-        `http://localhost:3000/api/v1/order/${id}`,
-        { status: 'preparing' }
-      )
-      console.log('response', response)
-    } catch (error) {
-      console.error(error)
-    }
-  }
-
-  const handleOnReadyClick = async (id: string) => {
-    try {
-      const response = await axios.put(
-        `http://localhost:3000/api/v1/order/${id}`,
-        { status: 'completed' }
-      )
-      console.log('response', response)
-    } catch (error) {
-      console.error(error)
-    }
-  }
-
-  const handleOnCancelClick = async (id: string) => {
-    try {
-      const response = await axios.put(
-        `http://localhost:3000/api/v1/order/${id}`,
-        { status: 'canceled' }
-      )
-      console.log('response', response)
-    } catch (error) {
-      console.error(error)
-    }
-  }
 
   return {
     incommingOrder,
     preparingOrder,
     readyOrder,
-    handleOnConfirmClick,
-    handleOnReadyClick,
-    handleOnCancelClick,
   }
 }
